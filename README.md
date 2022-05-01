@@ -191,36 +191,16 @@ with open(file_to_save, "w") as txt_file:
   ```
 In this situation, Ballot ID was not used at all, however there can be a modification to the script that removes any duplicate votes by tracing the Ballot ID similar to how we added candidates and counties to an empty list:
 ```
- ballot_id = []
- # For each row in the CSV file.
-    for row in reader:
-
-        # Add to the total vote count
-        total_votes = total_votes + 1
-
-        # Get the candidate name from each row.
-        candidate_name = row[2]
-
-        # 3: Extract the county name from each row.
-        county = row[1]
-
-        id = str(row[0])
-    
-        # If the candidate does not match any existing candidate add it to
-        # the candidate list
-        if candidate_name not in candidate_options:
-
-            # Add the candidate name to the candidate list.
-            candidate_options.append(candidate_name)
-
-            # And begin tracking that candidate's voter count.
-            candidate_votes[candidate_name] = 0
-
-          # Add a vote to that candidate's count
-        if id not in ballot_id:
-          ballot_id.append(id)
-          candidate_votes[candidate_name] += 1
-        elif id in ballot_id:
-          candidate_votes[candidate_name] += 0
+ballot_id = []
+# ...
+for county in county_names:
+  # ...
+  for id in ballot_id:
+    if id not in ballot_id:
+      ballot_id.append(id)
+      candidate_votes[candidate_name] += 1
+    elif id in ballot_id:
+      #write list of IDs to external file to track those who voted more than once
+  # ...
 ```
-The code above is an example modification to segment where the votes are counted for the candidates where it checks if a ballot ID is repeated. If a ballot ID is repeated, then the vote counter does not go up. This example is not perfect, because the ballot ID in different counties could be the same and both be valid, so there would also need to be an addition to the code where it tracks which county the IDs are being taken from. This step could also be performed on the data prior to running this code, however.
+The code above is an example modification to segment where the votes are counted for the candidates where it checks if a ballot ID is repeated. If a ballot ID is repeated, then the vote counter does not go up. This example is not perfect, but it tries to also take into consideration that ballot IDs may be repeated and give valid votes if both IDs are in different counties, so it checks the county first, then checks for IDs.
